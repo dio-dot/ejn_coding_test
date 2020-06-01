@@ -10,12 +10,15 @@ const Alert: React.FC<Props> = () => {
     (state: RootState) => state.todo
   );
   return (
-    <AlertStyle className={alertHidden && "hidden"}>{alertMessage}</AlertStyle>
+    <AlertStyle className={alertHidden ? "hidden" : ""}>
+      {alertMessage}
+    </AlertStyle>
   );
 };
 
 const AlertStyle = styled.div`
   position: fixed;
+  text-transform: uppercase;
   bottom: 0;
   width: 100%;
   height: 30px;

@@ -18,7 +18,7 @@ const createTodo = () => {
       title: `test${i}`,
       contents: "test contents",
       complete: false,
-      priority: Math.floor(Math.random() * (4 - 1) + 1),
+      priority: Math.floor(Math.random() * 3),
       deadline: new Date(
         new Date(2012, 0, 1).getTime() +
           Math.random() *

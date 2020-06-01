@@ -14,15 +14,6 @@ export const SET_EDIT_TODO = "SET_EDIT_TODO" as const;
 export const FILTER_REQUEST = "FILTER_REQUEST" as const;
 export const FILTER_SUCCESS = "FILTER_SUCCESS" as const;
 
-export interface TODO {
-  id: number;
-  title: string;
-  contents: string;
-  complete: boolean;
-  priority: string;
-  deadline: number;
-}
-
 export const filterRequest = (payload) => ({
   type: FILTER_REQUEST,
   payload,
@@ -91,17 +82,28 @@ type TodoAction =
   | ReturnType<typeof deleteTodoRequest>
   | ReturnType<typeof deleteTodoSuccess>;
 
+export interface TODO {
+  id?: number;
+  title: string;
+  contents: string;
+  complete?: boolean;
+  priority: string;
+  deadline: number | string;
+}
+export interface Filter {
+  priority: number;
+  deadline: number;
+  complete: number;
+}
+
 type TodoState = {
   todos: [TODO?];
-  filter: {
-    priority: number;
-    date: number;
-    complete: number;
-  };
+  filter: Filter;
   editTodo: TODO | null;
 
   creatingTodo: boolean;
   createdTodo: boolean;
+
   hasMoreTodo: boolean;
 
   alertHidden: boolean;
@@ -111,13 +113,14 @@ type TodoState = {
 const initialState: TodoState = {
   todos: [],
   filter: {
-    priority: 1,
-    date: 1,
-    complete: 1,
+    priority: 0,
+    deadline: 0,
+    complete: 0,
   },
   editTodo: null,
   creatingTodo: false,
   createdTodo: false,
+
   hasMoreTodo: false,
   alertHidden: true,
   alertMessage: "",
@@ -151,9 +154,10 @@ const reducer = (state: TodoState = initialState, action: TodoAction) => {
         break;
       }
       case PATCH_TODO_SUCCESS: {
-        console.log("PATCH SUCCESS", action.payload);
         const index = draft.todos.findIndex((v) => v?.id === action.payload.id);
         draft.todos[index] = action.payload;
+        draft.editTodo = null;
+
         break;
       }
       case LOAD_TODOS_REQUEST: {

@@ -5,7 +5,7 @@ import {
   call,
   put,
   delay,
-  throttle,
+  // throttle,
 } from "redux-saga/effects";
 import {
   CREATE_TODO_REQUEST,
@@ -65,17 +65,17 @@ function loadTodosAPI(data) {
   let complete = "";
   let priority = "";
   let deadline = "_sort=id&_order=desc";
-  if (data.filter.complete === 2) {
+  if (data.filter.complete === 1) {
     complete = "&complete=false";
-  } else if (data.filter.complete === 3) {
+  } else if (data.filter.complete === 2) {
     complete = "&complete=true";
   }
-  if (data.filter.priority !== 1) {
+  if (data.filter.priority !== 0) {
     priority = `&priority=${data.filter.priority - 1}`;
   }
-  if (data.filter.date === 2) {
+  if (data.filter.deadline === 1) {
     deadline = "_sort=deadline&_order=asc";
-  } else if (data.filter.date === 3) {
+  } else if (data.filter.deadline === 2) {
     deadline = "_sort=deadline&_order=desc";
   }
   return axios.get(

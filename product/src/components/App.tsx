@@ -1,9 +1,9 @@
 import React from "react";
-import TodoForm from "./TodoForm";
-import TodoList from "./TodoList";
+import TodoForm from "./todo/form";
+import TodoList from "./todo/list";
 import styled from "styled-components";
 import Alert from "./etc/Alert";
-import Filter from "./Filter";
+import Filter from "./etc/Filter";
 
 function App() {
   return (

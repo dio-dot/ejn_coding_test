@@ -1,60 +1,59 @@
-import React, { useEffect, useCallback, useRef, memo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loadTodosRequest } from "../lib/reducers/todo";
-import { RootState } from "../lib/reducers";
-import TodoItem from "./TodoItem";
+import React, { memo, useRef, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import Empty from "./etc/Empty";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../lib/reducers";
+import { loadTodosRequest } from "../../../lib/reducers/todo";
+import TodoItem from "./item";
+import Empty from "./empty";
+// import Empty from "../../etc/Empty";
 
-interface TodoListProps {}
-
-const TodoList: React.FC<TodoListProps> = memo(() => {
+interface Props {}
+const List: React.FC<Props> = () => {
   const dispatch = useDispatch();
-  const { todos, hasMoreTodo, filter } = useSelector(
+  const { todos, filter, hasMoreTodo } = useSelector(
     (state: RootState) => state.todo
   );
   const countRef = useRef<Array<number>>([]);
-
-  /** Event Handler */
+  /** handler */
   const onScroll = useCallback(() => {
     if (
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
       if (hasMoreTodo) {
-        const length = todos?.length;
+        const length = todos.length;
         if (!countRef.current.includes(length)) {
           dispatch(loadTodosRequest({ start: length, filter }));
           countRef.current.push(length);
         }
       }
     }
-  }, [todos, hasMoreTodo, dispatch, filter]);
-
+  }, [todos.length, filter, hasMoreTodo, dispatch]);
   /** Effect Hooks */
   useEffect(() => {
+    countRef.current = [];
     dispatch(loadTodosRequest({ start: 0, filter }));
-  }, [dispatch, filter]);
+  }, [filter, dispatch]);
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, [todos, hasMoreTodo, onScroll]);
+  }, [todos, onScroll]);
 
   return (
-    <TodoListStyle>
+    <ListStyle>
       {todos.length > 0 ? (
-        todos.map((todo, index) => {
-          return todo && <TodoItem key={index} todo={todo} />;
+        todos.map((todo) => {
+          return todo && <TodoItem key={todo?.id} todo={todo} />;
         })
       ) : (
-        <Empty> empty todo</Empty>
+        <Empty>Empty todo</Empty>
       )}
-    </TodoListStyle>
+    </ListStyle>
   );
-});
+};
 
-const TodoListStyle = styled.div`
+const ListStyle = styled.div`
   padding: 5px;
 `;
 
-export default TodoList;
+export default memo(List);
